@@ -84,7 +84,7 @@ function handleDelete() {
 
 const onUploadImg = async (files, callback) => {
   let resp = await common.upload(files, {});
-  callback(resp.map(v => `/system/file/download?uuid=${v.data}`));
+  callback(resp.map(v => `/prod-api/system/file/download?uuid=${v.data}`));
 };
 
 function handleEdit() {

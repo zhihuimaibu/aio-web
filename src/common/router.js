@@ -7,7 +7,7 @@ const router = createRouter({
         { path: '/404', component: () => import('/src/components/404.vue') },
         { path: '/system/login', component: () => import('/src/components/system/system-login.vue') },
         { path: '/system/user', component: () => import('/src/components/system/system-user.vue') },
-        { path: '/blog', component: () => import('/src/components/blog/blog-index.vue') },
+        { path: '/blog', component: () => import('/src/components/blog/blog-subject.vue') },
         { path: '/blog/info', component: () => import('/src/components/blog/blog-info.vue') },
         { path: '/blog/edit', component: () => import('/src/components/blog/blog-edit.vue') },
         { path: "/:pathMatch(.*)", redirect: "/404", name: "notMatch", hidden: true },
