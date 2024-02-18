@@ -15,6 +15,11 @@
                 登录
             </el-button>
         </router-link>
+        <router-link to="/month/balance">
+            <el-button class="bg-[#FFFFFF] rounded-lg">
+                记账
+            </el-button>
+        </router-link>
         <a href="/prod-api/system/user/logout">
             <el-button class="bg-[#FFFFFF] rounded-lg">
                 退出

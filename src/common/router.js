@@ -10,6 +10,7 @@ const router = createRouter({
         { path: '/blog', component: () => import('/src/components/blog/blog-subject.vue') },
         { path: '/blog/info', component: () => import('/src/components/blog/blog-info.vue') },
         { path: '/blog/edit', component: () => import('/src/components/blog/blog-edit.vue') },
+        { path: '/month/balance', component: () => import('/src/components/month/month-balance.vue') },
         { path: "/:pathMatch(.*)", redirect: "/404", name: "notMatch", hidden: true },
     ]
 });
