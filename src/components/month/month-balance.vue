@@ -144,6 +144,8 @@
   .box-table {
     width: 50%;
     height: 100%;
+    min-width: 650px;
+    max-width: 1200px;
     margin: 0 auto;
     padding: 1rem 0;
     display: flex;
