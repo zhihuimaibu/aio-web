@@ -12,28 +12,30 @@
         style="height: 100%;">
         <el-table-column width="40">
           <template #default="scope">
-            <el-icon @click="handleDeleteRow(scope.row)"><Delete /></el-icon>
+            <el-icon @click="handleDeleteRow(scope.row, scope.$index)"><Delete /></el-icon>
           </template>
         </el-table-column>
         <el-table-column 
-          v-for="c in tableColumns" 
-          :key="c.cid"
-          :prop="c.columnName"
-          :label="c.columnName"
+          v-for="(c, index) in tableColumns" 
+          :key="index"
           :class-name="c.selected ? 'selected-cell' : ''">
           <template #header="scope">
             <div class="header" 
-              @mouseenter="handleDeleteColumn(c)"
-              @mouseleave="handleLeaveColumn">
-              <el-icon><Delete /></el-icon>
+              @mouseenter="handleEnterHeader(index)"
+              @mouseleave="handleLeaveHeader">
+              <el-icon @click="handleDeleteColumn(c, index)"><Delete /></el-icon>
               <el-input
-                v-model="c.columnName" 
-                @input="handleInput(c)"
-                @focus="handleInput(c)"/>
+                v-model="c.columnName"
+                @input="handleInput(c, index)"
+                @focus="handleInput(c, index)"/>
             </div>
           </template>
           <template #default="scope">
-            <el-input v-model="scope.row[c.columnName]"/>
+            <el-input
+              v-model="scope.row[c.columnName +'_'+ index]"
+              :disabled="c.disabled"
+              :placeholder="c.disabled ? '请先输入表头' : ''"
+            />
           </template>
         </el-table-column>
       </el-table>
@@ -45,68 +47,97 @@
   import { ref, watch } from 'vue'
   import { Delete } from '@element-plus/icons-vue'
 
-  let cid = 0
-  let rid = 0
   let curColumn = ref('')
-  let curCid = ref('')
-  let oldCid 
-  const tableData = ref([{
-    rid,
-  }])
+  let curIndex = ref('')
+  let oldIndex
+  const tableData = ref([
+    { 
+      "1_0":"1",
+      "2_1":"1",
+      "1_2":"2"
+    }
+  ])
   const tableColumns = ref([{
-    cid,
-    selected: false
+    selected: false,
+    disabled: false,
+    columnName: '1',
+  },
+  {
+    selected: false,
+    disabled: false,
+    columnName: '2',
+  },
+  {
+    selected: false,
+    disabled: false,
+    columnName: '1',
   }])
 
-  const handleDeleteRow = function(row) {
-    console.log(row);
+  const handleDeleteRow = function(row, index) {
+    tableData.value.splice(1, 1)
+    console.log(row, index);
   }
   
-  const handleLeaveColumn = function() {
+  const handleDeleteColumn = function(c, index) {
+    tableData.value.map(td => {
+      delete td[c.columnName]
+      return td
+    })
+    // tableColumns.value = tableColumns.value.filter(tc => tc.columnName !== c.columnName)
+    tableColumns.value.splice(index, 1)
+    tableColumns.value.length === 0 && tableColumns.value.push({})
+  }
+
+  const handleLeaveHeader = function() {
     tableColumns.value.map(tc => {
       tc.selected = false
       return tc
     })
   }
 
-  const handleDeleteColumn = function(c) {
-    tableColumns.value.map(tc => {
-      if (tc.cid === c.cid) {
+  const handleEnterHeader = function(index) {
+    tableColumns.value.map((tc, tcIndex) => {
+      if (tcIndex === index) {
         tc.selected = !tc.selected
       }else {
         tc.selected = false
       }
       return tc
     })
-    console.log(c);
   }
 
   watch(curColumn, (newValue, oldValue) => {
-    if (oldCid === curCid.value) {
+    if (oldIndex === curIndex.value) {
       tableData.value.forEach(td => {
         td[newValue] = td[oldValue]
         delete td[oldValue]
       })
     }
-
-    oldCid = curCid.value
+    oldIndex = curIndex.value
   })
 
-  const handleInput = function(c) {
-    curColumn.value = c.columnName
-    curCid.value = c.cid
+  const handleInput = function(c, index) {
+    if (c.columnName) {
+      c.disabled = false
+    }else {
+      c.disabled = true
+    }
+    curColumn.value = c.columnName +"_"+ index
+    curIndex.value = index
   }
 
   const handleAddRow = function() {
-    tableData.value.push({
-      rid: ++rid
-    })
+    tableData.value.push({})
   }
 
   const handleAddColumn = function() {
     tableColumns.value.push({
-      cid: ++cid
+      disabled: true,
     })
+  }
+
+  const handleSave = function() {
+
   }
 </script>
 <style scoped>
